@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useHistory from react-router-dom
 import './ToDo.css';
 
 function ToDo() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState('');
   const [rank, setRank] = useState(1);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetch('http://localhost:3001/api/tasks')
@@ -44,6 +46,10 @@ function ToDo() {
       .catch(error => console.error('Error removing task:', error));
   };
 
+  const handleSubmit = () => {
+    navigate('/schedule', { state: { todos } });
+  };
+
   return (
     <div className="todo-container">
       <h1>To-Do List</h1>
@@ -69,6 +75,7 @@ function ToDo() {
           </li>
         ))}
       </ul>
+      <button onClick={handleSubmit}>Submit To-Do List</button>
     </div>
   );
 }
