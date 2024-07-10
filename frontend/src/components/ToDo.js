@@ -7,7 +7,6 @@ function ToDo() {
   const [rank, setRank] = useState(1);
 
   useEffect(() => {
-    // Fetch tasks from the backend when the component mounts
     fetch('http://localhost:3001/api/tasks')
       .then(response => response.json())
       .then(data => setTodos(data))
@@ -17,12 +16,9 @@ function ToDo() {
   const addTask = () => {
     if (task && rank) {
       const newTask = { task_description: task, rank };
-
       fetch('http://localhost:3001/api/tasks', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newTask),
       })
         .then(response => response.json())
@@ -44,14 +40,12 @@ function ToDo() {
       method: 'DELETE',
     })
       .then(response => response.json())
-      .then(() => {
-        setTodos(todos.filter(todo => todo._id !== id));
-      })
+      .then(() => setTodos(todos.filter(todo => todo._id !== id)))
       .catch(error => console.error('Error removing task:', error));
   };
 
   return (
-    <div>
+    <div className="todo-container">
       <h1>To-Do List</h1>
       <input
         type="text"
@@ -68,14 +62,12 @@ function ToDo() {
       />
       <button onClick={addTask}>Add Task</button>
       <ul>
-        {todos
-          .sort((a, b) => a.rank - b.rank)
-          .map((todo) => (
-            <li key={todo._id}>
-              {todo.task_description} (Rank: {todo.rank}){' '}
-              <button onClick={() => removeTask(todo._id)}>Remove</button>
-            </li>
-          ))}
+        {todos.sort((a, b) => a.rank - b.rank).map((todo) => (
+          <li key={todo._id}>
+            {todo.task_description} (Rank: {todo.rank}){' '}
+            <button onClick={() => removeTask(todo._id)}>Remove</button>
+          </li>
+        ))}
       </ul>
     </div>
   );

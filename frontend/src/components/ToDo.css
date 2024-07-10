@@ -1,15 +1,36 @@
-/* src/ToDo.css */
-h1 {
-  font-family: Arial, sans-serif;
+/* Base styling for the whole component */
+.todo-container {
+  max-width: 600px;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #f4f4f9;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Arial', sans-serif;
 }
 
-input {
+h1 {
+  color: #333;
+}
+
+input,
+button {
+  padding: 10px;
   margin-right: 10px;
-  padding: 5px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
 }
 
 button {
-  padding: 5px 10px;
+  cursor: pointer;
+  background-color: #5cb85c;
+  color: white;
+  border-color: #4cae4c;
+}
+
+button:hover {
+  background-color: #4cae4c;
 }
 
 ul {
@@ -18,11 +39,23 @@ ul {
 }
 
 li {
-  margin: 5px 0;
+  padding: 10px;
+  margin-top: 8px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
   display: flex;
+  justify-content: space-between;
   align-items: center;
 }
 
 li button {
-  margin-left: 10px;
+  padding: 6px 12px;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+  color: white;
+}
+
+li button:hover {
+  background-color: #c9302c;
 }
