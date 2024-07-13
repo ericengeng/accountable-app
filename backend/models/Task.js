@@ -9,6 +9,16 @@ const taskSchema = new mongoose.Schema({
     type: Number,
     unique: true,
     required: true,
+  },
+  hour: {
+    type: Number,
+    required: true,
+    min: 0,
+    max: 23,
+  },
+  start_time: {
+    type: Date,
+    default: Date.now,
   }
 });
 

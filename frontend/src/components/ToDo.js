@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useHistory from react-router-dom
+import { useNavigate } from 'react-router-dom';
 import './ToDo.css';
 
 function ToDo() {
   const [todos, setTodos] = useState([]);
   const [task, setTask] = useState('');
   const [rank, setRank] = useState(1);
+  const [hour, setHour] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -17,7 +18,7 @@ function ToDo() {
 
   const addTask = () => {
     if (task && rank) {
-      const newTask = { task_description: task, rank };
+      const newTask = { task_description: task, rank, hour }; // Ensure hour is added correctly
       fetch('http://localhost:3001/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -31,6 +32,7 @@ function ToDo() {
             setTodos([...todos, data]);
             setTask('');
             setRank(1);
+            setHour(0);
           }
         })
         .catch(error => console.error('Error adding task:', error));
@@ -66,11 +68,19 @@ function ToDo() {
         placeholder="Rank"
         min="1"
       />
+
+      <select value={hour} onChange={(e) => setHour(Number(e.target.value))}>
+        {Array.from({ length: 24 }).map((_, index) => (
+          <option key={index} value={index}>
+            {index % 12 === 0 ? 12 : index % 12} {index < 12 ? 'AM' : 'PM'}
+          </option>
+        ))}
+      </select>
       <button onClick={addTask}>Add Task</button>
       <ul>
         {todos.sort((a, b) => a.rank - b.rank).map((todo) => (
           <li key={todo._id}>
-            {todo.task_description} (Rank: {todo.rank}){' '}
+            {todo.task_description} (Rank: {todo.rank}, Hour: {todo.hour}){' '}
             <button onClick={() => removeTask(todo._id)}>Remove</button>
           </li>
         ))}
