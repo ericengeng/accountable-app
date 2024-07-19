@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './Schedule.css';
+import { signOutUser } from '../services/auth-service';
 
 function Schedule() {
   const location = useLocation();
@@ -61,11 +62,23 @@ function Schedule() {
   };
 
   const timeSlots = generateTimeSlots();
+  const handleLogout = () => {
+    signOutUser()
+      .then(() => {
+        navigate('/login'); // Redirect to login page after logout
+      })
+      .catch((error) => {
+        console.error('Error logging out:', error);
+      });
+  };
 
   return (
     <div className="schedule-page">
       <div className="schedule-container">
         <h1>24 Hour Schedule</h1>
+        <button onClick={handleLogout} className="logout-button">
+          Logout
+        </button>
         <ul>
           {timeSlots.map((timeSlot, index) => (
             <li key={index}>

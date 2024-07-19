@@ -5,6 +5,7 @@ import ToDo from './ToDo';
 import Schedule from './Schedule';
 import Auth from './Auth';
 import { auth } from '../configs/firebaseConfig';
+import ProtectedRoute from './ProtectedRoute';
 
 function App() {
   const [user, loading, error] = useAuthState(auth);
@@ -22,9 +23,16 @@ function App() {
       <Routes>
         <Route path="/login" element={<Auth />} />
         <Route path="/signup" element={<Auth />} />
-        {/* Redirect to login if no user is logged in */}
-        <Route path="/" element={user ? <ToDo /> : <Navigate to="/login" replace />} />
-        <Route path="/schedule" element={user ? <Schedule /> : <Navigate to="/login" replace />} />
+        <Route path="/" element={
+          <ProtectedRoute>
+            <ToDo />
+          </ProtectedRoute>
+        } />
+        <Route path="/schedule" element={
+          <ProtectedRoute>
+            <Schedule />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Router>
   );

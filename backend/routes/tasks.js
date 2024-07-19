@@ -14,7 +14,7 @@ router.get('/tasks', async (req, res) => {
 
 // Route to add a new task
 router.post('/tasks', async (req, res) => {
-  const { task_description, rank, hour } = req.body;
+  const { task_description, rank, hour } = req.body;  // Include 'hour' in the destructuring
 
   // Check if the rank already exists
   const existingTask = await Task.findOne({ rank });
@@ -30,28 +30,6 @@ router.post('/tasks', async (req, res) => {
     res.status(201).json(savedTask);
   } catch (err) {
     res.status(400).json({ message: err.message });
-  }
-});
-
-// Route to update a task
-router.put('/tasks/:id', async (req, res) => {
-  const { id } = req.params;
-  const { task_description, rank, hour } = req.body;
-
-  try {
-    const updatedTask = await Task.findByIdAndUpdate(
-      id,
-      { task_description, rank, hour },
-      { new: true }
-    );
-
-    if (!updatedTask) {
-      return res.status(404).json({ message: 'Task not found' });
-    }
-
-    res.json(updatedTask);
-  } catch (err) {
-    res.status(500).json({ message: err.message });
   }
 });
 

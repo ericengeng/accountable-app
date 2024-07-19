@@ -3,17 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { signIn, signUp, signOutUser } from '../services/auth-service';
 
 const Auth = () => {
-  const navigate = useNavigate(); // Set up the navigate function
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignUp = async () => {
     try {
-      await signUp(email, password);  // Attempt to sign up
+      await signUp(email, password);
       console.log("Signed up successfully!");
-      navigate('/');  // Navigate to ToDo page on successful signup
+      navigate("/");
     } catch (error) {
-      console.error("Error signing up:", error); // Handle any errors
+      console.error("Error signing up:", error);
+      navigate("/schedule");
     }
   };
 
@@ -21,7 +22,7 @@ const Auth = () => {
     try {
       await signIn(email, password);
       console.log("Signed in successfully!");
-      navigate('/');  // Optionally navigate on sign in as well
+      navigate('/');
     } catch (error) {
       console.error("Error signing in:", error);
     }
@@ -31,7 +32,7 @@ const Auth = () => {
     try {
       await signOutUser();
       console.log("Signed out successfully!");
-      navigate('/login'); // Navigate to login on sign out
+      navigate('/login');
     } catch (error) {
       console.error("Error signing out:", error);
     }
