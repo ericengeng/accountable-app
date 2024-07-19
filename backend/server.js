@@ -1,6 +1,6 @@
 const express = require('express');
 const connectDB = require('./database');
-const taskRoutes = require('./routes/tasks'); // Ensure the path is correct
+const taskRoutes = require('./routes/tasks');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -18,7 +18,7 @@ app.use(helmet());
 connectDB();
 
 // Routes setup
-app.use('/api', taskRoutes);
+app.use('/api/tasks', taskRoutes);
 
 // Root route for basic API check
 app.get('/', (req, res) => res.send('API Running'));
