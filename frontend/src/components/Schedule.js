@@ -27,7 +27,7 @@ function Schedule() {
       hour: taskHour,
     };
 
-    fetch(`http://localhost:3001/api/tasks/${id}`, {
+    fetch(`http://localhost:3001/api/user/${user.uid}/tasks/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedTask),

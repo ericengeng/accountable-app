@@ -34,6 +34,7 @@ function App() {
             <ToDo />
           </ProtectedRoute>
         } />
+
         <Route path="/schedule" element={
           <ProtectedRoute>
             <Schedule />

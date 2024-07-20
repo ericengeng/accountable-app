@@ -1,29 +1,39 @@
 const express = require('express');
 const connectDB = require('./database');
-const taskRoutes = require('./routes/tasks'); // Ensure the path is correct
+const taskRoutes = require('./routes/tasks');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
+const admin = require('firebase-admin');
 require('dotenv').config();
+const User = require('./models/User');
+
+process.env.GOOGLE_APPLICATION_CREDENTIALS = './serviceAccountKey.json'; // Update the path accordingly
+
+
+admin.initializeApp({
+  credential: admin.credential.cert(require(process.env.GOOGLE_APPLICATION_CREDENTIALS)),
+});
 
 const app = express();
 
-// Middleware setup
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
 app.use(helmet());
 
-// Database connection
 connectDB();
 
-// Routes setup
-app.use('/api', taskRoutes);
 
-// Root route for basic API check
+
+
+// Apply the authenticate middleware to your API routes
+
+app.use('/api/users', taskRoutes);
+
+
 app.get('/', (req, res) => res.send('API Running'));
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send('Something broke!');

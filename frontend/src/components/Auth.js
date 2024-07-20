@@ -9,8 +9,26 @@ const Auth = () => {
 
   const handleSignUp = async () => {
     try {
-      await signUp(email, password);
-      console.log("Signed up successfully!");
+      const response = await signUp(email, password);
+      const user = response.user; // Assuming this is the user object returned by Firebase
+      console.log("Signed up successfully!", user);
+
+      // Now send this user info to your backend
+      const token = await user.getIdToken();
+      const backendResponse = await fetch('http://localhost:3001/api/users/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          firebaseID: user.uid,
+
+        })
+      });
+
+      if (!backendResponse.ok) throw new Error('Failed to register user in backend.');
+
       navigate("/");
     } catch (error) {
       console.error("Error signing up:", error);

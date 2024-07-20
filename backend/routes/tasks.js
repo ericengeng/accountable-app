@@ -1,45 +1,79 @@
 const express = require('express');
 const router = express.Router();
+const User = require('../models/User');
 const Task = require('../models/Task');
 
-// Route to get all tasks
-router.get('/tasks', async (req, res) => {
+router.post('/', async (req, res) => {
+  const { firebaseID, name, email } = req.body;
   try {
-    const tasks = await Task.find().sort({ rank: 1 });
-    res.json(tasks);
+    const existingUser = await User.findOne({ firebaseID });
+    if (existingUser) {
+      return res.status(399).json({ message: 'User already exists' });
+    }
+
+    const newUser = new User({ firebaseID, name, email });
+    const savedUser = await newUser.save();
+    res.status(201).json(savedUser);
+  } catch (err) {
+    console.error('Error creating user:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+
+router.get('/:userId/tasks', async (req, res) => {
+  try {
+    const user = await User.findOne({ firebaseID: req.params.userId }).populate('tasks');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json(user.tasks);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
 
-// Route to add a new task
-router.post('/tasks', async (req, res) => {
-  const { task_description, rank, hour } = req.body;  // Include 'hour' in the destructuring
 
-  // Check if the rank already exists
-  const existingTask = await Task.findOne({ rank });
-  if (existingTask) {
-    return res.status(400).json({ message: 'Rank already exists' });
-  }
-
-  // Create a new task with task description, rank, and hour
-  const newTask = new Task({ task_description, rank, hour });
-
+router.post('/:userId/tasks', async (req, res) => {
+  const { task_description, rank, hour } = req.body;
   try {
+    const user = await User.findOne({ firebaseID: req.params.userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    const existingTask = user.tasks.find(task => task.rank === rank);
+    if (existingTask) {
+      return res.status(400).json({ message: 'Rank already exists for this user' });
+    }
+
+    const newTask = new Task({ task_description, rank, hour, });
     const savedTask = await newTask.save();
+    user.tasks.push(savedTask);
+    await user.save();
+
     res.status(201).json(savedTask);
   } catch (err) {
+    console.error('Error creating task:', err);
     res.status(400).json({ message: err.message });
   }
 });
 
-// Route to delete a task
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/:userId/tasks/:taskId', async (req, res) => {
   try {
-    const deletedTask = await Task.findByIdAndDelete(req.params.id);
-    if (!deletedTask) {
+    const user = await User.findOne({ firebaseID: req.params.userId });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const task = await Task.findOneAndDelete({ _id: req.params.taskId });
+    if (!task) {
       return res.status(404).json({ message: 'Task not found' });
     }
+
+    user.tasks.pull(task._id);
+    await user.save();
+
     res.json({ message: 'Task deleted' });
   } catch (err) {
     res.status(500).json({ message: err.message });
