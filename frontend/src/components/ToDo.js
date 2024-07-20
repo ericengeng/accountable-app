@@ -18,7 +18,7 @@ function ToDo() {
 
   const addTask = () => {
     if (task && rank) {
-      const newTask = { task_description: task, rank, hour }; // Ensure hour is added correctly
+      const newTask = { task_description: task, rank, hour };
       fetch('http://localhost:3001/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
