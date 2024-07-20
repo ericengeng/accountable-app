@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const User = require('../models/User');
 const Task = require('../models/Task');
+const Posting = require('../models/Posting');
 
 router.post('/', async (req, res) => {
   const { firebaseID, name, email } = req.body;
@@ -17,6 +18,50 @@ router.post('/', async (req, res) => {
   } catch (err) {
     console.error('Error creating user:', err);
     res.status(400).json({ message: err.message });
+  }
+});
+
+router.post('/:userId/postings', async (req, res) => {
+  const firebaseID = req.params.userId
+  try {
+    const user = await User.findOne({ firebaseID });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const newPosting = new Posting({ firebaseID });
+    newPosting.tasks = user.tasks;
+    await newPosting.save();
+
+    user.postings.push(newPosting._id);
+    await user.save();
+
+    res.status(201).json(newPosting);
+  } catch (err) {
+    console.error('Error creating posting:', err);
+    res.status(400).json({ message: err.message });
+  }
+});
+
+router.get('/:userId/postings', async (req, res) => {
+  try {
+    const user = await User.findOne({ firebaseID: req.params.userId })
+      .populate({
+        path: 'postings',
+        populate: {
+          path: 'tasks',
+          model: 'Task'
+        }
+      });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json(user.postings);
+  } catch (err) {
+    console.error('Error fetching postings:', err);
+    res.status(500).json({ message: err.message });
   }
 });
 
@@ -44,10 +89,10 @@ router.post('/:userId/tasks', async (req, res) => {
     }
     const existingTask = user.tasks.find(task => task.rank === rank);
     if (existingTask) {
-      return res.status(400).json({ message: 'Rank already exists for this user' });
+      return res.status(399).json({ message: 'Rank already exists for this user' });
     }
 
-    const newTask = new Task({ task_description, rank, hour, });
+    const newTask = new Task({ task_description, rank, hour });
     const savedTask = await newTask.save();
     user.tasks.push(savedTask);
     await user.save();

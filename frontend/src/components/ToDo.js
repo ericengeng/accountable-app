@@ -17,7 +17,6 @@ function ToDo() {
       if (user) {
         try {
           const token = await user.getIdToken(true);
-          // Updated URL to include the user ID
           const response = await fetch(`http://localhost:3001/api/users/${user.uid}/tasks`, {
             headers: {
               'Authorization': `Bearer ${token}`,
@@ -46,7 +45,6 @@ function ToDo() {
       try {
         const token = await user.getIdToken(true);
         const newTask = { task_description: task, rank, hour };
-        // Updated URL to include the user ID
         const response = await fetch(`http://localhost:3001/api/users/${user.uid}/tasks`, {
           method: 'POST',
           headers: {
@@ -80,7 +78,7 @@ function ToDo() {
     if (user) {
       try {
         const token = await user.getIdToken(true);
-        // Updated URL to include the user ID and task ID
+
         const response = await fetch(`http://localhost:3001/api/users/${user.uid}/tasks/${id}`, {
           method: 'DELETE',
           headers: {
@@ -104,6 +102,31 @@ function ToDo() {
   const handleSubmit = () => {
     console.log('Submitting to-do list:', todos);
     navigate('/schedule', { state: { todos } });
+  };
+
+  const handlePosting = async () => {
+    const user = auth.currentUser;
+    if (user) {
+      try {
+        const token = await user.getIdToken(true);
+        const response = await fetch(`http://localhost:3001/api/users/${user.uid}/postings`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+        });
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+      } catch (error) {
+        console.error('Error adding task:', error);
+      }
+    } else {
+      console.error('User is not authenticated or task data is missing.');
+    }
+    navigate('/');
   };
 
   return (
@@ -142,7 +165,8 @@ function ToDo() {
           ))}
         </ul>
       )}
-      <button onClick={handleSubmit}>Submit To-Do List</button>
+      <button onClick={handleSubmit}>See Your Schedule</button>
+      <button onClick={handlePosting}>Post To-Do List</button>
     </div>
   );
 }

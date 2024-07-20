@@ -11,6 +11,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Task'
   }],
+  postings: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Posting'
+  }],
 
 });
 
