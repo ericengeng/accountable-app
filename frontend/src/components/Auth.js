@@ -14,7 +14,6 @@ const Auth = () => {
       navigate("/");
     } catch (error) {
       console.error("Error signing up:", error);
-      navigate("/schedule");
     }
   };
 

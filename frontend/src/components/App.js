@@ -5,6 +5,7 @@ import ToDo from './ToDo';
 import Schedule from './Schedule';
 import Auth from './Auth';
 import { auth } from '../configs/firebaseConfig';
+import Profile from './Profile';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -25,6 +26,11 @@ function App() {
         <Route path="/signup" element={<Auth />} />
         <Route path="/" element={
           <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
+        <Route path="/todo" element={
+          <ProtectedRoute>
             <ToDo />
           </ProtectedRoute>
         } />
@@ -33,6 +39,7 @@ function App() {
             <Schedule />
           </ProtectedRoute>
         } />
+
       </Routes>
     </Router>
   );
