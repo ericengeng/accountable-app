@@ -20,6 +20,27 @@ router.post('/', async (req, res) => {
     res.status(400).json({ message: err.message });
   }
 });
+router.post('/:userID/friends', async (req, res) => {
+  const firebaseID = req.params.userID
+  try {
+    const user = await User.findOne({ firebaseID });
+    const { friendID } = req.body;
+    if (firebaseID === friendID) {
+      return res.status(400).json({ message: 'Cannot add yourself as a friend' });
+    }
+    if (!user) {
+      return res.status(404).json({ message: 'Current user not found' });
+    }
+    if (user.friends.includes(friendID)) {
+      return res.status(409).json({ message: 'This user is already your friend' });
+    }
+
+    await user.save();
+    res.status(201).json({ message: 'Friend added successfully' });
+  } catch (err) {
+    res.status(500).json({ error: 'An error occurred while fetching users' });
+  }
+});
 
 router.post('/:userId/postings', async (req, res) => {
   const firebaseID = req.params.userId

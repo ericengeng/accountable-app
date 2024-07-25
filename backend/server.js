@@ -1,6 +1,7 @@
 const express = require('express');
 const connectDB = require('./database');
 const taskRoutes = require('./routes/tasks');
+const friendRoutes = require('./routes/friends');
 const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
@@ -25,11 +26,8 @@ app.use(helmet());
 connectDB();
 
 
-
-
-// Apply the authenticate middleware to your API routes
-
 app.use('/api/users', taskRoutes);
+app.use('/api/friends', friendRoutes);
 
 
 app.get('/', (req, res) => res.send('API Running'));

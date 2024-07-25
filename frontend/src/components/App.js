@@ -6,6 +6,7 @@ import Schedule from './Schedule';
 import Auth from './Auth';
 import { auth } from '../configs/firebaseConfig';
 import Profile from './Profile';
+import Friends from './Friends';
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -38,6 +39,11 @@ function App() {
         <Route path="/schedule" element={
           <ProtectedRoute>
             <Schedule />
+          </ProtectedRoute>
+        } />
+        <Route path="/friends" element={
+          <ProtectedRoute>
+            <Friends />
           </ProtectedRoute>
         } />
 

@@ -48,6 +48,7 @@ function Profile() {
       <ul>
         <li><Link to="/todo">Todo List</Link></li>
         <li><Link to="/schedule">Schedule</Link></li>
+        <li><Link to="/friends">Friends</Link></li>
       </ul>
       <h2>Posts</h2>
       {postings.length === 0 ? (
